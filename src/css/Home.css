@@ -1,0 +1,61 @@
+.about-qr {
+    text-align: center;
+}
+.about-qr h2 {
+    margin-top: 80px;
+    margin-left: 40px;
+}
+.ant-tabs-tab {
+    color: white !important;
+}
+.qr-tools h3 {
+    margin-left: 20px;
+}
+.ant-tabs-nav {
+    margin: 20px !important;
+}
+.qr-gen-body {
+    margin: 0px 20px 0px 20px;
+    text-align: center;
+    color: white;
+}
+.remove-btn {
+    margin-bottom: 25px;
+}
+.generated-ctn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+.generated-qr {
+    margin: 10px;
+    padding: 4px;
+    border: 1px solid darkslateblue;
+    display: flex;
+    width: 300px;
+    height: 300px;
+    justify-content: center; 
+    align-items: center;
+}
+.generated-qr img {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+}
+.generated-btn {
+    display: flex;
+    gap: 8px;
+    justify-content:space-evenly;
+}
+.result-ctn {
+    padding: 20px;
+    color: white;
+}
+.result-ctn h2 {
+    text-align: center;
+}
+.result-ctn button {
+    margin-left: 10px;
+}

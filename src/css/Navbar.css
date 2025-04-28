@@ -1,0 +1,51 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #001529;
+  z-index: 1000;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo a {
+  color: white;
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.menu-desktop {
+  display: none;
+  margin-right: 25px;
+}
+
+.menu-desktop ul {
+  background-color: #001529 !important;
+}
+
+.ant-menu-title-content,
+.ant-menu-submenu-title {
+  color: white !important;
+}
+
+.menu-mobile {
+  display: block;
+  margin-right: 20px;
+}
+
+@media (min-width: 768px) {
+  .menu-desktop {
+    display: block;
+  }
+
+  .menu-mobile {
+    display: none;
+  }
+}
