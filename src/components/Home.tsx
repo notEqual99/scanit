@@ -98,7 +98,7 @@ const Home: FunctionalComponent = () => {
       label: 'QR Reader',
       children: (
         <Row>
-          <Col span={12}>
+          <Col span={12} xs={24} md={12}>
             <div className="qr-gen-body space-y-4">
               <div
                 onDragOver={e => e.preventDefault()}
@@ -130,7 +130,7 @@ const Home: FunctionalComponent = () => {
             </div>
           </Col>
     
-          <Col span={12}>
+          <Col span={12} xs={24} md={12}>
             <div className="result-ctn">
               {decoded && (
                 <div>
@@ -156,7 +156,7 @@ const Home: FunctionalComponent = () => {
       label: 'QR Generator',
       children: (
         <Row>
-          <Col span={16}>
+          <Col span={16} xs={24} md={12}>
             <div className="qr-gen-body space-y-4">
               <Form
                 layout="vertical"
@@ -247,7 +247,7 @@ const Home: FunctionalComponent = () => {
             </div>
           </Col>
 
-          <Col span={8}>
+          <Col span={8} xs={24} md={12}>
             <div className="generated-ctn">
               <div className="generated-qr">
                 {qrDataUrl ? (

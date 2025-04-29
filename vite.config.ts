@@ -10,4 +10,8 @@ export default defineConfig({
       'react-dom': 'preact/compat',
     },
   },
+  server: {
+    host: true,   // this is same as 0.0.0.0
+    port: 5173,
+  }
 })

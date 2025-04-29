@@ -1,7 +1,36 @@
 #app {
   width: 100%;
 }
+.ant-drawer-close,
+.anticon-close {
+  color: white;
+}
+.ant-drawer-header {
+  background-color: #001529;
+  color: whitesmoke;
+}
+.ant-drawer-body {
+  background-color: #242424;
+}
+.ant-menu .ant-menu-item {
+  background-color: #242424;
+}
+.ant-menu-light {
+  background-color: #242424;
+}
+.ant-btn-variant-solid {
+  background-color: #242424;
+} 
 .qr-btn {
   background-color: #001529;
   color: whitesmoke;
+}
+.footer {
+  margin-top: 50px;
+  text-align: center;
+  padding: 1rem;
+  background-color: #001529; /* Dark navy like your brand */
+  color: #ffffff;
+  font-size: 0.875rem;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
 }

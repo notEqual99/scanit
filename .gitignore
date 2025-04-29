@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+docker-compose.override.yml
+Dockerfile.dev
 
 # Editor directories and files
 .vscode/*
