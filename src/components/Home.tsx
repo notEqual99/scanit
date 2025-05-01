@@ -223,7 +223,7 @@ const Home: FunctionalComponent = () => {
                           </Col>
                           <Col span={4}>
                             <Button className="remove-btn" onClick={() => remove(name)} danger>
-                              Remove
+                              X
                             </Button>
                           </Col>
                         </Row>
