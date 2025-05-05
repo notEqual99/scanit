@@ -12,8 +12,8 @@
 .ant-drawer-body {
   background-color: #242424;
 }
-.ant-menu .ant-menu-item {
-  background-color: #242424;
+li.ant-menu-item.ant-menu-item-selected.ant-menu-item-only-child {
+  background-color: #001529;
 }
 .ant-menu-light {
   background-color: #242424;
