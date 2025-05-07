@@ -10,7 +10,7 @@ Free QR code scan and generate tools
 * node version - v18.17.0
 * npm run dev
 ## Todos
-[ ] Color QR code
+[ x ] Color QR code
 
 [ ] Add Logo in QR code
 

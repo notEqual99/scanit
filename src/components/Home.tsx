@@ -3,14 +3,21 @@ import { useRef, useState } from 'preact/hooks';
 import QRCode from 'qrcode';
 import jsQR from 'jsqr';
 import { Tabs, Input, Button, message, Col, Row, Form, Select } from 'antd';
+import { ColorPicker, Space, ColorPickerProps, GetProp } from 'antd';
 import type { TabsProps } from 'antd';
 import '../css/Home.css';
 
+type Color = GetProp<ColorPickerProps, 'value'>;
+
 const Home: FunctionalComponent = () => {
+  const DEFAULT_DOT_COLOR = '#000000';
+  const DEFAULT_BG_COLOR = '#ffffff';
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [decoded, setDecoded] = useState('');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [fieldTypes, setFieldTypes] = useState<Record<number, string>>({});
+  const [dotColor, setDotColor] = useState<Color>(DEFAULT_DOT_COLOR);
+  const [qrBgColor, setQrBgColor] = useState<Color>(DEFAULT_BG_COLOR);
   
   const downloadQr = () => {
     if (!qrDataUrl) return;
@@ -27,14 +34,20 @@ const Home: FunctionalComponent = () => {
     message.success('QR code copied to clipboard');
   };
 
-  const resetQr = async () => {
+  const resetQr = () => {
     setQrDataUrl('');
+    message.info('QR code cleared');
   }
 
   const handleDrop = (e: DragEvent) => {
     e.preventDefault();
     if (e.dataTransfer?.files.length) {
-      processFile(e.dataTransfer.files[0]);
+      const file = e.dataTransfer.files[0];
+      if (file.type.startsWith('image/')) {
+        processFile(file);
+      } else {
+        message.error('Please drop an image file');
+      }
     }
   };
   
@@ -47,13 +60,22 @@ const Home: FunctionalComponent = () => {
 
   const processFile = (file: File) => {
     const reader = new FileReader();
+    
     reader.onload = (event) => {
       const img = new Image();
+      
       img.onload = () => {
         const canvas = canvasRef.current;
-        if (!canvas) return;
+        if (!canvas) {
+          message.error('Canvas reference not found');
+          return;
+        }
+        
         const ctx = canvas.getContext('2d');
-        if (!ctx) return;
+        if (!ctx) {
+          message.error('Could not get canvas context');
+          return;
+        }
   
         const maxSize = 300;
         const minSize = 200;
@@ -63,33 +85,51 @@ const Home: FunctionalComponent = () => {
           scale = Math.max(minSize / img.width, minSize / img.height);
         }
   
-        const newWidth = img.width * scale;
-        const newHeight = img.height * scale;
+        const newWidth = Math.floor(img.width * scale);
+        const newHeight = Math.floor(img.height * scale);
   
         canvas.width = newWidth;
         canvas.height = newHeight;
         ctx.clearRect(0, 0, newWidth, newHeight);
         ctx.drawImage(img, 0, 0, newWidth, newHeight);
   
-        const imageData = ctx.getImageData(0, 0, newWidth, newHeight);
-        const code = jsQR(imageData.data, newWidth, newHeight);
-        setDecoded(code ? code.data : 'No QR code found');
+        try {
+          const imageData = ctx.getImageData(0, 0, newWidth, newHeight);
+          const code = jsQR(imageData.data, newWidth, newHeight);
+          
+          if (code) {
+            setDecoded(code.data);
+            message.success('QR code successfully scanned');
+          } else {
+            setDecoded('No QR code found');
+            message.warning('No QR code found in the image');
+          }
+        } catch (err) {
+          console.error('Error processing QR code:', err);
+          message.error('Error processing the image');
+        }
+      };
+      
+      img.onerror = () => {
+        message.error('Failed to load the image');
       };
   
       if (event.target?.result) {
         img.src = event.target.result as string;
       }
     };
+    
+    reader.onerror = () => {
+      message.error('Failed to read the file');
+    };
+    
     reader.readAsDataURL(file);
   };
-  
-  const generateQrFromText = async (content: string) => {
-    try {
-      const url = await QRCode.toDataURL(content, { width: 300 });
-      setQrDataUrl(url);
-    } catch (err) {
-      console.error(err);
-    }
+
+  const handleResetColors = () => {
+    setDotColor(DEFAULT_DOT_COLOR);
+    setQrBgColor(DEFAULT_BG_COLOR);
+    message.info('Colors reset to default');
   };
   
   const items: TabsProps['items'] = [
@@ -141,7 +181,10 @@ const Home: FunctionalComponent = () => {
                   <button className="qr-btn" onClick={() => copyToClipboard(decoded)}>
                     copy
                   </button>
-                  <button onClick={() => setDecoded("")}>reset</button>
+                  <button onClick={() => {
+                    setDecoded("");
+                    message.info('QR result cleared');
+                  }}>reset</button>
                   <hr/>
                 </div>
               )}
@@ -229,7 +272,7 @@ const Home: FunctionalComponent = () => {
                         </Row>
                       ))}
                       <Form.Item>
-                        <Button className="qr-btn" variant="filled" onClick={() => add()}>
+                        <Button className="qr-btn" onClick={() => add()}>
                           + Add Field
                         </Button>
                       </Form.Item>
@@ -237,11 +280,48 @@ const Home: FunctionalComponent = () => {
                   )}
                 </Form.List>
           
+                <Row gutter={8} justify="center">
+                  <div className="color-ctn">
+                    <p><strong>QR Code Colors</strong></p>
+                    <p style={{ fontSize: '0.9em', color: '#666' }}>Dot Color | Background Color</p>
+                  </div>
+                </Row>
+                <Row gutter={8} justify="center">
+                  <Col span={7}></Col>
+                  <Col span={3}>
+                    <Form.Item>
+                    <Space>
+                      <ColorPicker
+                        value={dotColor}
+                        onChange={(color) => {
+                          setDotColor(color.toHexString());
+                        }}
+                      />
+                    </Space>
+                    </Form.Item>
+                  </Col>
+                  <Col span={3}>
+                    <Form.Item>
+                    <Space>
+                      <ColorPicker
+                        value={qrBgColor}
+                        onChange={(color) => {
+                          setQrBgColor(color.toHexString());
+                        }}
+                      />
+                    </Space>
+                    </Form.Item>
+                  </Col>
+                  <Col span={3}>
+                    <Button shape="circle" title="Reset colors" onClick={handleResetColors} icon={<span role="img" aria-label="Reset colors">🔄</span>} />
+                  </Col>
+                  <Col span={7}></Col>
+                </Row>
+
                 <div className="flex gap-2 mb-4">
-                  <Button color='green' variant="filled" htmlType="submit">
-                    Generate
+                  <Button type="primary" htmlType="submit">
+                    Generate QR Code
                   </Button>
-                  
                 </div>
               </Form>
             </div>
@@ -284,7 +364,26 @@ const Home: FunctionalComponent = () => {
       ),
     }
   ];
-  
+
+  const generateQrFromText = async (content: string): Promise<void> => {
+    try {
+      const options = {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: dotColor as string,
+          light: qrBgColor as string,
+        },
+      };
+      
+      const url = await QRCode.toDataURL(content, options);
+      setQrDataUrl(url);
+    } catch (err) {
+      console.error(err);
+      message.error('Failed to generate QR code');
+    }
+  };
+
   function formatDecodedText(decoded: string) {
     const parts = decoded.split(';').filter(Boolean);
     return parts.map((part, index) => {
@@ -300,17 +399,17 @@ const Home: FunctionalComponent = () => {
 
   function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text).then(() => {
-      alert('Copied to clipboard!');
+      message.success('Copied to clipboard!');
     }).catch((err) => {
       console.error('Failed to copy: ', err);
+      message.error('Failed to copy to clipboard');
     });
   }
 
   return (
     <main className="">
       <section className="about-qr">
-        <h2 className="font-bold">QR Code</h2>
-        <p></p>
+        <h2 className="font-bold">QR Code Generator & Reader</h2>
       </section>
 
       <section className="qr-tools">
