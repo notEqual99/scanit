@@ -205,8 +205,9 @@ const Home: FunctionalComponent = () => {
                 layout="vertical"
                 onFinish={async (values: { fields: { type: string; value: string }[] }) => {
                   const combined = values.fields
-                    .map(({ type, value }) => `${type}: ${value};`)
-                    .join('\n');
+                    .map(({ type, value }) => `${type}: ${value}`)
+                    .join(';\n')
+                    .trim();
                   await generateQrFromText(combined);
                 }}
               >
